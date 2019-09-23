@@ -1,0 +1,25 @@
+# Workaround for "--gpus" flag ("runtime" option) is available only in version 2
+# version: "3.7"
+version: "2.4"
+
+services:
+  cuda_jupyter:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    working_dir: /content
+    ports:
+      - 0.0.0.0:8888:8888
+    volumes:
+      - content_vol:/content
+      - venv_vol:/root/.local/share/virtualenvs # Persist pipenv managed virtualenv
+    runtime: "${RUNTIME:-runc}"
+    # For lldb
+    security_opt:
+      - seccomp=unconfined
+    cap_add:
+      - SYS_PTRACE
+
+volumes:
+  content_vol:
+  venv_vol:
